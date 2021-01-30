@@ -230,3 +230,20 @@
     --ion-card-background: #1e1e1e;
   }
 }
+
+.alert .alert-head{
+  background: linear-gradient(to right,#4E97FF,#355DF1);
+  text-align: center;
+}
+.alert .alert-title{
+  color: #ffffff;
+}
+
+.alert .alert-message{
+  margin-top: 20px;
+  text-align: center;
+}
+
+.alert .alert-button-group{
+  text-align: center;
+}

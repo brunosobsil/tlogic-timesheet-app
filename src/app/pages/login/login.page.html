@@ -1,0 +1,17 @@
+<ion-content [fullscreen]="true">
+  <div class="logo-wrapper">
+    <ion-img [src]="logo" class="logo"></ion-img>
+  </div>
+  <ion-list [formGroup]="loginForm">
+    <ion-item lines="none">
+      <ion-text>E-mail:</ion-text>  
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-text>Senha:</ion-text>  
+      <ion-input type="password" formControlName="senha"></ion-input>
+    </ion-item>
+    <ion-button expand="full" (click)="entrar()">Entrar</ion-button>
+  </ion-list>
+  <ion-img [src]="poweredBy" class="powered_by"></ion-img>
+</ion-content>
