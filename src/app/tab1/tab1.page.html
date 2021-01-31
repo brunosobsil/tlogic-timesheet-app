@@ -1,17 +1,71 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header mode="ios">
+  <ion-toolbar class="header">
     <ion-title>
       Apontar
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content fullscreen>
+
+  <ion-toolbar class="date-toolbar">
+    <ion-icon name="arrow-back" (click)="ontem()" style="float: left; font-size: x-large;"></ion-icon>
+    {{getDataAtual()}}
+    <ion-icon name="arrow-forward" (click)="amanha()" style="float: right; font-size: x-large;"></ion-icon>
+  </ion-toolbar>
+
+  <ion-item>
+    <ion-label position="stacked" style="color:blue">Observações:</ion-label>
+    <ion-textarea placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap"></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked" style="color: blue;">Cliente:</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label style="color: blue;">Apontamentos:</ion-label>
+  </ion-item>
+
+  <ion-list lines="full">
+
+    <ion-item>
+      <ion-icon name="arrow-undo-outline" color="primary"></ion-icon>
+      <ion-text style="margin-left: 20px;">09:00</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="arrow-redo-outline" color="danger"></ion-icon>
+      <ion-text style="margin-left: 20px;">12:00</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="arrow-undo-outline" color="primary"></ion-icon>
+      <ion-text style="margin-left: 20px;">13:00</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="arrow-redo-outline" color="danger"></ion-icon>
+      <ion-text style="margin-left: 20px;">18:00</ion-text>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" edge slot="fixed" style="position: absolute; bottom: 30px; right: 30px;">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
+
+<!--
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Tab 1</ion-title>
     </ion-toolbar>
   </ion-header>
-
+  
   <app-explore-container name="Tab 1 page"></app-explore-container>
-</ion-content>
+  -->
