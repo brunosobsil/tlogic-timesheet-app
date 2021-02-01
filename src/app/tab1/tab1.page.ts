@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingController } from '@ionic/angular';
 import { LoginService } from '../services/login.service';
 import { Usuario } from '../interfaces/usuario-interface';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -31,13 +32,16 @@ export class Tab1Page implements OnInit{
   timePickerOptions: any;
   timesheet: Timesheet;
   usuarioAutenticado: Usuario;
+  opcao: number = 1;
+  apontamentoSelecionado: Apontamento;
 
   constructor(public clienteSvc: ClienteService,
               public modalController: ModalController,
               public alertController: AlertController,
               public timesheetSvc: TimesheetService,
               public loadingController: LoadingController,
-              public loginService: LoginService) {
+              public loginService: LoginService,
+              public actionSheetController: ActionSheetController) {
     
     this.tmsForm = new FormGroup({
       observacao: new FormControl('', Validators.required),
@@ -66,8 +70,8 @@ export class Tab1Page implements OnInit{
             minute: selected.minute.value
           };
           let datetimeApontado = this.dataAtual;
-          this.formToModel(datetimeApontado.set(horaApontada).toDate());
-          await this.salvar();
+          this.formToModel(this.opcao, datetimeApontado.set(horaApontada).toDate());
+          await this.salvar(this.opcao);
         }
       }
       ]
@@ -91,12 +95,14 @@ export class Tab1Page implements OnInit{
     return this.dataAtual.format('dddd  - DD/MM/YYYY');
   }
 
-  ontem(){
-    this.dataAtual.subtract(1, 'days');
-  }
+  changeDate(dias: number){
+    if(dias > 0 ){
+      this.dataAtual.add(dias,'days');
+    }else{
+      this.dataAtual.subtract(dias*-1, 'days');
+    }
+    this.initialValues();
 
-  amanha(){
-    this.dataAtual.add(1,'days');
   }
 
   getClienteOption(){
@@ -120,12 +126,45 @@ export class Tab1Page implements OnInit{
         titulo: 'Clientes'
       }
     });
-    modal.onDidDismiss().then((data: any) =>{
+    modal.onDidDismiss().then(async (data: any) =>{
       if(data && data.data){
+
         let selecionado = data.data;
-        this.tmsForm.patchValue({
-          cliente: {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao}
+
+        const loading = await this.loadingController.create({
+          message: 'Carregando...',
         });
+    
+        loading.present();
+
+        // verifica se tem registro no banco para esse dia/cliente
+        let timesheets = await this.timesheetSvc.obterTimesheets(this.dataAtual.toDate(), 
+                                                                 this.dataAtual.toDate(),
+                                                                 selecionado.codigo,
+                                                                 selecionado.codigo,
+                                                                 this.usuarioAutenticado.id,
+                                                                 this.usuarioAutenticado.id);
+        
+        timesheets.subscribe(data => {
+          loading.dismiss();
+          if(data.length > 0){
+            let timesheetDb = data[0];
+            this.timesheet.id = timesheetDb.id;
+            this.timesheet.observacao = timesheetDb.observacao;
+            this.timesheet.apontamentos = timesheetDb.apontamentos.map(a => {
+              return {id_timesheet: timesheetDb.id, sequencia: a.sequencia, hora: a.hora}
+            });
+            this.tmsForm.patchValue({
+              observacao: this.timesheet.observacao,
+              cliente: {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao}
+            })
+          }else{
+            this.tmsForm.patchValue({
+              cliente: {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao}
+            });
+          }
+        });
+
       }
     });
     await modal.present();
@@ -163,69 +202,164 @@ export class Tab1Page implements OnInit{
     return h.format('HH:mm');
   }
 
-  formToModel(datetimeApontado: Date){
+  formToModel(opcao: number, datetimeApontado: Date){
 
-    this.timesheet = {
-      id: this.timesheet.id,
-      usuario: this.usuarioAutenticado,
-      cliente: this.tmsForm.value.cliente,
-      data: this.dataAtual.toDate(),
-      observacao: this.tmsForm.value.observacao,
-      apontamentos: this.timesheet.apontamentos
+    switch(opcao){
+
+      case 1: { // incluir
+        this.timesheet = {
+          id: this.timesheet.id,
+          usuario: this.usuarioAutenticado,
+          cliente: this.tmsForm.value.cliente,
+          data: this.dataAtual.toDate(),
+          observacao: this.tmsForm.value.observacao,
+          apontamentos: this.timesheet.apontamentos
+        }
+        
+        let apontamento: Apontamento = {
+          id_timesheet: this.timesheet.id,
+          sequencia: this.timesheet.apontamentos.length + 1,
+          hora: datetimeApontado
+        }
+        
+        this.timesheet.apontamentos.push(apontamento);
+        break;
+      }
+      case 2: { // alterar
+        this.timesheet.apontamentos = this.timesheet.apontamentos.map(a => {
+          if(a.sequencia === this.apontamentoSelecionado.sequencia){
+            a = {id_timesheet: a.id_timesheet, sequencia: a.sequencia, hora: datetimeApontado}
+          };
+          return a;
+        });
+        break;
+      }
+      case 3: { // Excluir
+        // remove o apontamento
+        this.timesheet.apontamentos.splice(this.apontamentoSelecionado.sequencia-1);
+        // reordena os sequenciais.
+        for(let i = 0; i < this.timesheet.apontamentos.length; i++){
+          this.timesheet.apontamentos[i].sequencia = i+1;
+        }
+        break;
+      }
     }
-    
-    let apontamento: Apontamento = {
-      id_timesheet: this.timesheet.id,
-      sequencia: this.timesheet.apontamentos.length + 1,
-      hora: datetimeApontado
-    }
-    
-    this.timesheet.apontamentos.push(apontamento);
 
   }
 
-  async salvar(){
+  async salvar(opcao: number){
 
     const loading = await this.loadingController.create({
       message: 'Salvando...',
     });
 
     loading.present();
-    
-    if(!this.timesheet.id){
-      
-      let tmsObservable: Observable<any> = await this.timesheetSvc.incluirTimesheet(this.timesheet);
-      tmsObservable.subscribe(async data => {
-        this.timesheet.id = data.id;
-        await loading.dismiss();
-      }, async (error: HttpErrorResponse) => {
 
-        await loading.dismiss();
-        
-        if(error.status === 0){
-          this.exibeAlerta('Não foi possível conectar com o servidor. Verifique sua conexão com a internet!');
+    switch(opcao){
+
+      case 1: // Incluir Apontamento
+      {
+        if(!this.timesheet.id){
+          
+          let tmsObservable: Observable<any> = await this.timesheetSvc.incluirTimesheet(this.timesheet);
+          tmsObservable.subscribe(async data => {
+            this.timesheet.id = data.id;
+            await loading.dismiss();
+          }, async (error: HttpErrorResponse) => {
+
+            await loading.dismiss();
+            
+            if(error.status === 0){
+              this.exibeAlerta('Não foi possível conectar com o servidor. Verifique sua conexão com a internet!');
+            }else{
+              this.exibeAlerta('Erro desconhecido. Tente novamente mais tarde.');
+            }
+          });
         }else{
-          this.exibeAlerta('Erro desconhecido. Tente novamente mais tarde.');
+          let tmsObservable: Observable<any> = await this.timesheetSvc.alterarTimesheet(this.timesheet);
+          tmsObservable.subscribe(async data => {
+            await loading.dismiss();
+          }, async (error: HttpErrorResponse) => {
+            await loading.dismiss();
+            if(error.status === 0){
+              this.exibeAlerta('Não foi possível conectar com o servidor. Verifique sua conexão com a internet!');
+            }else{
+              this.exibeAlerta('Erro desconhecido. Tente novamente mais tarde.');
+            }
+          });
         }
-      });
-    }else{
-      let tmsObservable: Observable<any> = await this.timesheetSvc.alterarTimesheet(this.timesheet);
-      tmsObservable.subscribe(async data => {
-        await loading.dismiss();
-      }, async (error: HttpErrorResponse) => {
-        await loading.dismiss();
-        if(error.status === 0){
-          this.exibeAlerta('Não foi possível conectar com o servidor. Verifique sua conexão com a internet!');
-        }else{
-          this.exibeAlerta('Erro desconhecido. Tente novamente mais tarde.');
-        }
-      });
+        break;
+      }
+      case 2: // Alterar Apontamento
+      {
+        let tmsObservable: Observable<any> = await this.timesheetSvc.alterarTimesheet(this.timesheet);
+          tmsObservable.subscribe(async data => {
+            await loading.dismiss();
+          }, async (error: HttpErrorResponse) => {
+
+            await loading.dismiss();
+            
+            if(error.status === 0){
+              this.exibeAlerta('Não foi possível conectar com o servidor. Verifique sua conexão com a internet!');
+            }else{
+              this.exibeAlerta('Erro desconhecido. Tente novamente mais tarde.');
+            }
+          });
+      }
     }
+    this.opcao = 1;
   }
 
   async getUsuarioAutenticado() {
     const usuario: Usuario = await this.loginService.getUsuarioAutenticado();
     return usuario;
+  }
+
+  initialValues(){
+    this.timesheet = {
+      id: null,
+      usuario: null,
+      cliente: null,
+      data: this.dataAtual.toDate(),
+      observacao: null,
+      apontamentos: []
+    },
+    this.tmsForm.reset();
+  }
+
+  async opcoesEdicao(apontamento: Apontamento){
+    this.apontamentoSelecionado = apontamento;
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Opções',
+      buttons: [
+      {
+        text: 'Alterar',
+        icon: 'pencil-outline',
+        handler: () => {
+          this.opcao = 2;
+          this.timePicker.open();
+        }
+      },
+      {
+        text: 'Excluir',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.opcao = 3;
+          this.formToModel(this.opcao, null);
+          this.salvar(2);
+        }
+      },
+      {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          this.opcao = 1;
+        }
+      }]
+    });
+    await actionSheet.present();
   }
 
 }

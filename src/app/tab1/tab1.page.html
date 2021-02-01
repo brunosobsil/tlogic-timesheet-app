@@ -11,19 +11,19 @@
   <ng-container [formGroup]="tmsForm">
 
     <ion-toolbar class="date-toolbar">
-      <ion-icon name="arrow-back" (click)="ontem()" style="float: left; font-size: x-large; margin-left: 10px;"></ion-icon>
+      <ion-icon name="arrow-back" (click)="changeDate(-1)" style="float: left; font-size: x-large; margin-left: 10px;"></ion-icon>
       {{getDataAtual()}}
-      <ion-icon name="arrow-forward" (click)="amanha()" style="float: right; font-size: x-large; margin-right: 10px;"></ion-icon>
+      <ion-icon name="arrow-forward" (click)="changeDate(1)" style="float: right; font-size: x-large; margin-right: 10px;"></ion-icon>
     </ion-toolbar>
-
-    <ion-item>
-      <ion-label position="stacked" style="color:blue">Observações:</ion-label>
-      <ion-textarea formControlName="observacao" placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap"></ion-textarea>
-    </ion-item>
 
     <ion-item lines="full" button (click)="selecionarClientes()" detail>
       <ion-label style="color: blue">Cliente:</ion-label>
       <div style="min-width: 66%;">{{getClienteOption() || "Selecione..."}}</div>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" style="color:blue">Observações:</ion-label>
+      <ion-textarea formControlName="observacao" placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap"></ion-textarea>
     </ion-item>
 
   </ng-container>
@@ -38,6 +38,9 @@
       <ion-icon [attr.name]="a.sequencia % 2 !== 0 ? 'arrow-undo-outline' : 'arrow-redo-outline'" 
                 [attr.color]="a.sequencia % 2 !== 0 ? 'primary' : 'danger'"></ion-icon>
       <ion-text style="margin-left: 20px;">{{showTime(a.hora)}}</ion-text>
+      <ion-button slot="end" (click)="opcoesEdicao(a)">
+        <ion-icon name="ellipsis-vertical-outline" style="float:right"></ion-icon>
+      </ion-button>
     </ion-item>
 
   </ion-list>
