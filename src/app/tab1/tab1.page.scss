@@ -1,3 +1,8 @@
+@font-face{
+    font-family: 'Sarpanch-Regular';
+    src: url('../../assets/fonts/sarpanch/Sarpanch-Regular.ttf') format('truetype')
+}
+
 .header{
     --background: linear-gradient(to right,#4E97FF,#355DF1);
     color: white;
@@ -7,8 +12,14 @@
     --background: #DCDCDC;
     text-align: center;
     text-transform: capitalize;
+    font-family: Sarpanch-Regular;
 }
 
 .observacoes{
     border: solid 1px black;
+}
+
+.label-campo{
+    color: blue;
+    font-family: Sarpanch-Regular;
 }

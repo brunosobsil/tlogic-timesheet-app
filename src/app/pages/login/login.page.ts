@@ -16,7 +16,7 @@ import { LoadingController } from '@ionic/angular';
 export class LoginPage implements OnInit {
 
   logo: string = "/assets/logo-timesheet.png";
-  poweredBy: string = "/assets/powered_by.png";
+  poweredBy: string = "/assets/powered_by_centered.png";
   loginForm: FormGroup;
 
   constructor(public alertController: AlertController, 
