@@ -6,6 +6,7 @@ import { Login } from '../../interfaces/login-interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginPage implements OnInit {
   constructor(public alertController: AlertController, 
               public loginSvc: LoginService,
               public storage: Storage,
-              public router: Router) { 
+              public router: Router,
+              public loadingController: LoadingController) { 
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.email, Validators.required]),
       senha: new FormControl('', Validators.required)
@@ -32,20 +34,29 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
-  entrar(){
+  async entrar(){
     
     if(this.loginForm.valid){
+
+      const loading = await this.loadingController.create({
+        message: 'Validando credenciais...',
+      });
+
+      await loading.present();
       
       let email: string = this.loginForm.get('email').value;
       email = email.trim();
       let senha: string = this.loginForm.get('senha').value;
       
       this.loginSvc.login(email, senha)
-        .subscribe((data: Login) => {
-          this.storage.set('token', data.token);
-          this.storage.set('usuario', data.usuario);
+        .subscribe(async (data: Login) => {
+          await this.storage.set('token', data.token);
+          await this.storage.set('usuario', data.usuario);
+          await loading.dismiss();
           this.router.navigate(['main/tab1']);
-        },(error: HttpErrorResponse) => {
+        },async (error: HttpErrorResponse) => {
+
+          await loading.dismiss();
           
           if(error.status === 401){
             this.exibeAlerta('Usuário não autenticado!');

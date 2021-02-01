@@ -9,9 +9,9 @@
 <ion-content fullscreen>
 
   <ion-toolbar class="date-toolbar">
-    <ion-icon name="arrow-back" (click)="ontem()" style="float: left; font-size: x-large;"></ion-icon>
+    <ion-icon name="arrow-back" (click)="ontem()" style="float: left; font-size: x-large; margin-left: 10px;"></ion-icon>
     {{getDataAtual()}}
-    <ion-icon name="arrow-forward" (click)="amanha()" style="float: right; font-size: x-large;"></ion-icon>
+    <ion-icon name="arrow-forward" (click)="amanha()" style="float: right; font-size: x-large; margin-right: 10px;"></ion-icon>
   </ion-toolbar>
 
   <ion-item>
@@ -19,9 +19,9 @@
     <ion-textarea placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap"></ion-textarea>
   </ion-item>
 
-  <ion-item>
-    <ion-label position="stacked" style="color: blue;">Cliente:</ion-label>
-    <ion-input></ion-input>
+  <ion-item lines="full" button (click)="selecionarClientes()" detail>
+    <ion-label style="color: blue">Cliente:</ion-label>
+    <div style="min-width: 66%;">{{getClienteOption() || "Selecione..."}}</div>
   </ion-item>
 
   <ion-item>

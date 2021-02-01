@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{titulo}}</ion-title>
+  </ion-toolbar>
+  <ion-header>
+    <ion-searchbar placeholder="Procurar..." (ionChange)="onSearch($event.target.value)"></ion-searchbar>
+  </ion-header>
+</ion-header>
+
+<ion-content>
+  
+  <ion-list lines="full">
+    <ion-item *ngFor="let item of lista" button (click)="onSelect(item)" >
+      <ion-label>
+        <h2 style="color: blue;">{{item.codigo}}</h2>
+        <h3>{{item.descricao}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
