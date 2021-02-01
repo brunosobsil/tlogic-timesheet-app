@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Login } from '../interfaces/login-interface';
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
+import { Usuario } from '../interfaces/usuario-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,11 @@ export class LoginService {
   async getToken(): Promise<string>{
     const token:string = await this.storage.get('token');
     return token;
+  }
+
+  async getUsuarioAutenticado(){
+    const usuario: Usuario = await this.storage.get('usuario');
+    return usuario;
   }
 
 }
