@@ -399,8 +399,12 @@ export class Tab1Page implements OnInit{
   }
 
   async atividadesLostFocus(){
-    this.timesheet.observacao = this.tmsForm.value.observacao;
-    await this.salvar(2);
+    if(this.tmsForm.value.observacao){
+      this.timesheet.observacao = this.tmsForm.value.observacao;
+      if(this.tmsForm.value.cliente){
+        await this.salvar(2);
+      }
+    }
   }
 
 }
