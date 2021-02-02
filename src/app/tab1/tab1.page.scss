@@ -1,6 +1,6 @@
 @font-face{
-    font-family: 'Sarpanch-Regular';
-    src: url('../../assets/fonts/sarpanch/Sarpanch-Regular.ttf') format('truetype')
+    font-family: 'Roboto-Sans';
+    src: url('../../assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype')
 }
 
 .header{
@@ -12,7 +12,7 @@
     --background: #DCDCDC;
     text-align: center;
     text-transform: capitalize;
-    //font-family: Sarpanch-Regular;
+    font-family: Roboto-Sans;
 }
 
 .observacoes{
@@ -21,5 +21,5 @@
 
 .label-campo{
     color: blue;
-    //font-family: Sarpanch-Regular;
+    font-family: Roboto-Sans;
 }

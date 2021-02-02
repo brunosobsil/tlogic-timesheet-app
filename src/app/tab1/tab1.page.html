@@ -22,10 +22,10 @@
     </ion-item>
 
     <ion-item>
-      <ion-label class="label-campo">Observações:</ion-label>
+      <ion-label class="label-campo">Descri&ccedil;&atilde;o das atividades:</ion-label>
     </ion-item>
     <ion-item>
-      <ion-textarea formControlName="observacao" placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap"></ion-textarea>
+      <ion-textarea formControlName="observacao" placeholder="Informe suas observações sobre o atendimento..." class="observacoes ion-text-wrap" (focusout)="atividadesLostFocus()"></ion-textarea>
     </ion-item>
 
   </ng-container>
@@ -37,7 +37,7 @@
   <ion-list lines="full" style="height: 50%;">
 
     <ion-item *ngFor="let a of timesheet.apontamentos">
-      <ion-icon [attr.name]="a.sequencia % 2 !== 0 ? 'arrow-down-outline' : 'arrow-up-outline'" 
+      <ion-icon [attr.name]="a.sequencia % 2 !== 0 ? 'arrow-up-outline' : 'arrow-down-outline'" 
                 [attr.color]="a.sequencia % 2 !== 0 ? 'primary' : 'danger'"></ion-icon>
       <ion-text style="margin-left: 20px;">{{showTime(a.hora)}}</ion-text>
       <ion-button slot="end" (click)="opcoesEdicao(a)">
@@ -47,9 +47,9 @@
 
   </ion-list>
 
-  <ion-item>
-    <ion-label class="label-campo">Total:</ion-label>
-    <ion-text></ion-text>
+  <ion-item lines="none">
+    <ion-label slot="start" class="label-campo">Total:</ion-label>
+    <ion-text slot="start" style="margin-right: 50%;">{{totalHoras}}</ion-text>
   </ion-item>
 
   <ion-fab vertical="bottom" horizontal="end" edge slot="fixed" style="position: absolute; bottom: 30px; right: 30px;">

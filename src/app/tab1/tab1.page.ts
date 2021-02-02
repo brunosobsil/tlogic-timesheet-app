@@ -34,7 +34,7 @@ export class Tab1Page implements OnInit{
   usuarioAutenticado: Usuario;
   opcao: number = 1;
   apontamentoSelecionado: Apontamento;
-  totalHoras: moment.Moment;
+  totalHoras: string = '00:00';
 
   constructor(public clienteSvc: ClienteService,
               public modalController: ModalController,
@@ -160,7 +160,8 @@ export class Tab1Page implements OnInit{
             this.tmsForm.patchValue({
               observacao: this.timesheet.observacao,
               cliente: {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao}
-            })
+            });
+            this.totalHoras = this.calculaTotal();
           }else{
             this.tmsForm.patchValue({
               cliente: {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao}
@@ -182,10 +183,15 @@ export class Tab1Page implements OnInit{
     }else{
       if(this.tmsForm.get('cliente').hasError('required')){
         mensagem = 'Cliente é obrigatório!';
-      }else if(this.tmsForm.get('observacao').hasError('required')){
-        mensagem = 'Observação é obrigatória!';
+        this.exibeAlerta(mensagem);
+      }else if(this.tmsForm.get('observacao').hasError('required') && this.timesheet.apontamentos.length >= 3){
+        mensagem = 'Não esqueça de informar as suas atividades!';
+        this.exibeAlerta(mensagem);
+        this.timePicker.open();
+      }else{
+        this.timePicker.open();
       }
-      this.exibeAlerta(mensagem);
+      
     }
   }
 
@@ -240,16 +246,12 @@ export class Tab1Page implements OnInit{
         break;
       }
       case 3: { // Excluir
-        console.log('antes splice');
-        console.log(this.timesheet);
         this.timesheet.apontamentos.splice(this.apontamentoSelecionado.sequencia-1);
-        console.log('timesheet antes de salvar');
-        console.log(this.timesheet);
         this.reprocessaSequencia();
         break;
       }
     }
-    this.calculaTotal();
+    this.totalHoras = this.calculaTotal();
 
   }
 
@@ -377,16 +379,28 @@ export class Tab1Page implements OnInit{
   }
 
   calculaTotal(){
+    
+    let totalString: string = '00:00';
+    let total: moment.Duration = moment.duration('00:00');
+    // Gera os períodos
     for(let i = 0; i < this.timesheet.apontamentos.length; i++){
       if((i+1) <= (this.timesheet.apontamentos.length -1)){
         let d1 = moment(new Date(this.timesheet.apontamentos[i].hora));
         let d2 = moment(new Date(this.timesheet.apontamentos[i+1].hora));
-        console.log(d2.diff(d1,'hours'));
-        console.log(d2.diff(d1,'minutes'));
-        console.log(d2.diff(d1,'seconds'));
+        let periodo = moment.duration(d2.format('HH:mm')).subtract(moment.duration(d1.format('HH:mm')));
+        total = moment.duration(total).add(moment.duration(periodo));
+        i++;
       }
     }
-    return 0;
+
+    totalString = moment.utc(total.as('milliseconds')).format('HH:mm');
+    
+    return totalString;
+  }
+
+  async atividadesLostFocus(){
+    this.timesheet.observacao = this.tmsForm.value.observacao;
+    await this.salvar(2);
   }
 
 }
