@@ -34,6 +34,7 @@ export class Tab1Page implements OnInit{
   usuarioAutenticado: Usuario;
   opcao: number = 1;
   apontamentoSelecionado: Apontamento;
+  totalHoras: moment.Moment;
 
   constructor(public clienteSvc: ClienteService,
               public modalController: ModalController,
@@ -151,8 +152,10 @@ export class Tab1Page implements OnInit{
             let timesheetDb = data[0];
             this.timesheet.id = timesheetDb.id;
             this.timesheet.observacao = timesheetDb.observacao;
+            this.timesheet.cliente = {id: Number.parseInt(selecionado.codigo), nome: selecionado.descricao, valor_hora: null};
+            this.timesheet.usuario = this.usuarioAutenticado;
             this.timesheet.apontamentos = timesheetDb.apontamentos.map(a => {
-              return {id_timesheet: timesheetDb.id, sequencia: a.sequencia, hora: a.hora}
+              return {id_timesheet: timesheetDb.id, sequencia: a.sequencia, hora: new Date(a.hora)}
             });
             this.tmsForm.patchValue({
               observacao: this.timesheet.observacao,
@@ -177,10 +180,10 @@ export class Tab1Page implements OnInit{
     if(this.tmsForm.valid){
       this.timePicker.open();
     }else{
-      if(this.tmsForm.get('observacao').hasError('required')){
-        mensagem = 'Observação é obrigatória!';
-      }else if(this.tmsForm.get('cliente').hasError('required')){
+      if(this.tmsForm.get('cliente').hasError('required')){
         mensagem = 'Cliente é obrigatório!';
+      }else if(this.tmsForm.get('observacao').hasError('required')){
+        mensagem = 'Observação é obrigatória!';
       }
       this.exibeAlerta(mensagem);
     }
@@ -223,6 +226,7 @@ export class Tab1Page implements OnInit{
         }
         
         this.timesheet.apontamentos.push(apontamento);
+        this.reprocessaSequencia();
         break;
       }
       case 2: { // alterar
@@ -232,18 +236,20 @@ export class Tab1Page implements OnInit{
           };
           return a;
         });
+        this.reprocessaSequencia();
         break;
       }
       case 3: { // Excluir
-        // remove o apontamento
+        console.log('antes splice');
+        console.log(this.timesheet);
         this.timesheet.apontamentos.splice(this.apontamentoSelecionado.sequencia-1);
-        // reordena os sequenciais.
-        for(let i = 0; i < this.timesheet.apontamentos.length; i++){
-          this.timesheet.apontamentos[i].sequencia = i+1;
-        }
+        console.log('timesheet antes de salvar');
+        console.log(this.timesheet);
+        this.reprocessaSequencia();
         break;
       }
     }
+    this.calculaTotal();
 
   }
 
@@ -360,6 +366,27 @@ export class Tab1Page implements OnInit{
       }]
     });
     await actionSheet.present();
+  }
+
+  reprocessaSequencia(){
+    this.timesheet.apontamentos = this.timesheet.apontamentos.sort((a,b) => a.hora.getTime() - b.hora.getTime());
+    this.timesheet.apontamentos = this.timesheet.apontamentos.map((a,i) => {
+      a.sequencia = i+1;
+      return a;
+    });
+  }
+
+  calculaTotal(){
+    for(let i = 0; i < this.timesheet.apontamentos.length; i++){
+      if((i+1) <= (this.timesheet.apontamentos.length -1)){
+        let d1 = moment(new Date(this.timesheet.apontamentos[i].hora));
+        let d2 = moment(new Date(this.timesheet.apontamentos[i+1].hora));
+        console.log(d2.diff(d1,'hours'));
+        console.log(d2.diff(d1,'minutes'));
+        console.log(d2.diff(d1,'seconds'));
+      }
+    }
+    return 0;
   }
 
 }

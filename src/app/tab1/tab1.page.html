@@ -34,7 +34,7 @@
     <ion-label class="label-campo">Apontamentos:</ion-label>
   </ion-item>
 
-  <ion-list lines="full">
+  <ion-list lines="full" style="height: 50%;">
 
     <ion-item *ngFor="let a of timesheet.apontamentos">
       <ion-icon [attr.name]="a.sequencia % 2 !== 0 ? 'arrow-down-outline' : 'arrow-up-outline'" 
@@ -46,6 +46,11 @@
     </ion-item>
 
   </ion-list>
+
+  <ion-item>
+    <ion-label class="label-campo">Total:</ion-label>
+    <ion-text></ion-text>
+  </ion-item>
 
   <ion-fab vertical="bottom" horizontal="end" edge slot="fixed" style="position: absolute; bottom: 30px; right: 30px;">
     <ion-fab-button (click)="incluirApontamento()">
