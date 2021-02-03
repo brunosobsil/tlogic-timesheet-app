@@ -71,8 +71,13 @@ export class Tab1Page implements OnInit{
             minute: selected.minute.value
           };
           let datetimeApontado = this.dataAtual;
-          this.formToModel(this.opcao, datetimeApontado.set(horaApontada).toDate());
-          await this.salvar(this.opcao);
+          if(!this.jaApontou(datetimeApontado.set(horaApontada))){
+            this.formToModel(this.opcao, datetimeApontado.set(horaApontada).toDate());
+            await this.salvar(this.opcao);
+          }else{
+            this.exibeAlerta('Horário já foi apontado!');
+            return false;
+          }
         }
       }
       ]
@@ -246,7 +251,7 @@ export class Tab1Page implements OnInit{
         break;
       }
       case 3: { // Excluir
-        this.timesheet.apontamentos.splice(this.apontamentoSelecionado.sequencia-1);
+        this.timesheet.apontamentos.splice(this.apontamentoSelecionado.sequencia-1,1);
         this.reprocessaSequencia();
         break;
       }
@@ -405,6 +410,18 @@ export class Tab1Page implements OnInit{
         await this.salvar(2);
       }
     }
+  }
+
+  jaApontou(hora: moment.Moment): boolean{
+    let jaApontou = false;
+    let pesquisa = this.timesheet.apontamentos.filter(a => {
+      let horaJaApontada = moment(a.hora).format('HH:mm');
+      return horaJaApontada === hora.format('HH:mm');
+    });
+    if(pesquisa.length > 0){
+      jaApontou = true;
+    }
+    return jaApontou;
   }
 
 }
