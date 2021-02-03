@@ -184,6 +184,7 @@ export class Tab1Page implements OnInit{
     let mensagem: string = '';
 
     if(this.tmsForm.valid){
+      this.timePicker.value = new Date().toISOString();
       this.timePicker.open();
     }else{
       if(this.tmsForm.get('cliente').hasError('required')){
@@ -349,6 +350,7 @@ export class Tab1Page implements OnInit{
         text: 'Alterar',
         icon: 'pencil-outline',
         handler: () => {
+          this.timePicker.value = apontamento.hora.toISOString();
           this.opcao = 2;
           this.timePicker.open();
         }
