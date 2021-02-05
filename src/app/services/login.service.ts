@@ -10,7 +10,7 @@ import { Usuario } from '../interfaces/usuario-interface';
 })
 export class LoginService {
 
-  private url:string = 'https://tlogic-timesheet-api.herokuapp.com/login';
+  private url:string = 'https://tlogic-timesheet-api-fv2ws.ondigitalocean.app/login';
 
   constructor(private http: HttpClient, private storage: Storage) {}
 

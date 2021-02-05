@@ -9,7 +9,7 @@ import { Observable } from "rxjs";
 })
 export class ClienteService {
 
-    private url: string = 'https://tlogic-timesheet-api.herokuapp.com/cliente';
+    private url: string = 'https://tlogic-timesheet-api-fv2ws.ondigitalocean.app/cliente';
 
     constructor(private http: HttpClient, private loginSvc: LoginService){
     }

@@ -9,7 +9,7 @@ import * as moment from 'moment';
   })
   export class TimesheetService{
 
-    private url: string = 'https://tlogic-timesheet-api.herokuapp.com/timesheet';
+    private url: string = 'https://tlogic-timesheet-api-fv2ws.ondigitalocean.app/timesheet';
       
     constructor(private loginSvc: LoginService, private http: HttpClient){}
 
