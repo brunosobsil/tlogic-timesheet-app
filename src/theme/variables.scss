@@ -253,9 +253,10 @@ ion-datetime .datetime-text{
 }
 
 .modal-period .modal-wrapper {
-  height: 35%;
+  height: 32%;
   width: 70%;
   top: 30%;
   position: absolute; 
-  display: block;  
+  display: block;
+  box-shadow: 5px 10px 18px #888888;  
 }

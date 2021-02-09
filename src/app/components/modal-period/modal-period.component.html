@@ -1,13 +1,16 @@
+<ion-header mode="ios">
+  <ion-toolbar class="header">
+    <ion-title>
+      Período
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
   
   <ion-list lines="none" class="padding">
     <ion-item>
-      <ion-label>
-        <h1 style="font-weight: bold;">Selecione o Período</h1>
-      </ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label>Data inicial</ion-label>
+      <ion-label style="color: blue">Data inicial</ion-label>
       <ion-datetime [(ngModel)]="dataInicial" 
                     displayFormat="DD/MM/YYYY" 
                     doneText="Confirmar"
@@ -16,15 +19,15 @@
       </ion-datetime>
     </ion-item>
     <ion-item>
-      <ion-label>Data final</ion-label>
+      <ion-label style="color: blue;">Data final</ion-label>
       <ion-datetime [(ngModel)]="dataFinal" 
                     displayFormat="DD/MM/YYYY"
                     doneText="Confirmar"
                     cancelText="Cancelar"
                     placeholder="Selecione..."></ion-datetime>
     </ion-item>
-    <ion-button expand="block" color="primary" (click)="Gerar()">Gerar</ion-button>
-    <ion-button expand="block" color="secondary" (click)="Cancelar()">Cancelar</ion-button>
+    <ion-button expand="full" fill="clear" color="primary" (click)="Gerar()">Gerar</ion-button>
+    <!--<ion-button expand="block" color="secondary" (click)="Cancelar()">Cancelar</ion-button>-->
     
   </ion-list>
   

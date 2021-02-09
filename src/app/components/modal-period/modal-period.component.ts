@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-modal-period',
@@ -11,13 +11,30 @@ export class ModalPeriodComponent implements OnInit {
   dataInicial: Date = new Date();
   dataFinal: Date = new Date();
 
-  constructor(private modal: ModalController) {}
+  constructor(private modal: ModalController, private alertController: AlertController) {}
 
   ngOnInit() {}
 
-  Gerar(){}
+  Gerar(){
+    if(this.dataFinal < this.dataInicial){
+      this.exibeAlerta('Data final não pode ser menor que a data inicial!');
+    }else{
+      this.modal.dismiss({dataInicial: this.dataInicial, dataFinal: this.dataFinal});
+    }
+  }
   Cancelar(){
     this.modal.dismiss();
+  }
+
+  async exibeAlerta(mensagem: string){
+    const alerta = await this.alertController.create({
+      header: 'Atenção!',
+      cssClass: 'alert',
+      backdropDismiss: false,
+      message: mensagem,
+      buttons: ['OK']
+    });
+    await alerta.present();
   }
 
 }

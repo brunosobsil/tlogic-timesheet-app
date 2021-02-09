@@ -10,6 +10,7 @@ ion-label{
 ion-button{
     margin-left: auto;
     margin-right: auto;
+    margin-top: 20px;
     width: 80%;
 }
 
@@ -18,6 +19,12 @@ ion-datetime .datetime-text{
 }
 
 .padding{
+    padding-top: 5%;
     padding-left: 3%;
     padding-right: 3%;
+}
+
+.header{
+    --background: linear-gradient(to right,#4E97FF,#355DF1);
+    color: white;
 }

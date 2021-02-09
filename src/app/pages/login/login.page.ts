@@ -31,7 +31,14 @@ export class LoginPage implements OnInit {
     
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    /*
+    const token = await this.loginSvc.getToken();
+    const usuario = await this.loginSvc.getUsuarioAutenticado();
+    if(token && usuario){
+      this.router.navigate(['main/tab1']);
+    }
+    */
   }
 
   async entrar(){

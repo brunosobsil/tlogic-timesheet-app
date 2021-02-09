@@ -1,0 +1,26 @@
+<ion-header mode="ios">
+  <ion-toolbar class="header">
+    <ion-title>
+      Extrato de Horas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen="true">
+  <ion-grid>
+    <ion-row>
+      <ion-col>Data</ion-col>
+      <ion-col>Cliente</ion-col>
+      <ion-col>Horas</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let linha of extrato">
+      <ion-col>{{getData(linha.data)}}</ion-col>
+      <ion-col>Enauta Energia S/A</ion-col>
+      <ion-col>{{getHorasDia(linha.data, linha.horas_dia)}}</ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col></ion-col>
+      <ion-col><b>Total</b></ion-col>
+      <ion-col>{{getTotalHoras(extrato[0].horas_periodo)}}</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

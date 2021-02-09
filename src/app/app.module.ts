@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { ModalSelectModule } from './components/modal-select/modal-select.module';
 import { ModalPeriodModule } from './components/modal-period/modal-period.module';
+import { ExtratoHorasModule } from './components/extrato-horas/extrato-horas.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +23,8 @@ import { ModalPeriodModule } from './components/modal-period/modal-period.module
            AppRoutingModule, 
            IonicStorageModule.forRoot(),
            ModalSelectModule,
-           ModalPeriodModule ],
+           ModalPeriodModule,
+           ExtratoHorasModule ],
   providers: [
     StatusBar,
     SplashScreen,
