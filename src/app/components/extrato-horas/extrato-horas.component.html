@@ -17,10 +17,17 @@
       <ion-col>Enauta Energia S/A</ion-col>
       <ion-col>{{getHorasDia(linha.data, linha.horas_dia)}}</ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row style="background-color: white;">
       <ion-col></ion-col>
-      <ion-col><b>Total</b></ion-col>
-      <ion-col>{{getTotalHoras(extrato[0].horas_periodo)}}</ion-col>
+      <ion-col><b>Total horas</b></ion-col>
+      <ion-col><b>{{getTotalHoras(extrato[0].horas_periodo)}}</b></ion-col>
+    </ion-row>
+    <ion-row style="background-color: white;">
+      <ion-col></ion-col>
+      <ion-col><b>Total valor</b></ion-col>
+      <ion-col><b>{{getTotalValor(extrato[0].total_receber)}}</b></ion-col>
     </ion-row>
   </ion-grid>
+  <!--<ion-button color="primary" expand="block" (click)="exportarExcel()">Exportar Excel</ion-button>-->
+  <ion-button color="primary" expand="block" (click)="fechar()">Fechar</ion-button>
 </ion-content>

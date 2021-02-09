@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { ModalPeriodComponent } from '../components/modal-period/modal-period.component';
 import { ExtratoHorasComponent } from '../components/extrato-horas/extrato-horas.component';
 import { UsuarioService } from '../services/usuario-service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -11,7 +12,9 @@ import { UsuarioService } from '../services/usuario-service';
 })
 export class Tab2Page {
 
-  constructor(private modalController: ModalController, private usuarioSvc: UsuarioService) {}
+  constructor(private modalController: ModalController, 
+              private usuarioSvc: UsuarioService,
+              private loadingController: LoadingController) {}
 
   async parametros(){
     
@@ -24,6 +27,10 @@ export class Tab2Page {
       if(data && data.data){
         const dataInicial:Date = data.data.dataInicial;
         const dataFinal:Date = data.data.dataFinal;
+        const loading = await this.loadingController.create({
+          message: 'Processando...',
+        });
+        loading.present();
         const extrato = await this.usuarioSvc.extratoHoras(dataInicial, dataFinal);
         extrato.subscribe(async extrato => {
           const modalExtrato = await this.modalController.create({
@@ -32,6 +39,7 @@ export class Tab2Page {
               extrato: extrato
             }
           });
+          await loading.dismiss();
           await modalExtrato.present();
         });
       }

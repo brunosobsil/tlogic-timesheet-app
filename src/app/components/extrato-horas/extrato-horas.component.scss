@@ -9,20 +9,22 @@ ion-grid {
     border-style: hidden;
     
     ion-row:first-child {
-      background-color:  blue;
-      color: white;
+      //background-color:  blue;
+      color: blue;
       font-weight: bold;
     }
     ion-col {
-      border: 1px solid black;
+      //border: 1px solid black;
       border-bottom: 0;
       border-right: 0;
     }
-    ion-col:last-child {
-      border-right: 1px solid black;
-    }
     
-    ion-row:last-child {
-      border-bottom: 1px solid black;
+    ion-row:nth-child(even){
+      background-color: #f2f2f2;;
     }
+  }
+
+  ion-button{
+    width: 80%;
+    margin-left: 10%;
   }
