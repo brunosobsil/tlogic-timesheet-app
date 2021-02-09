@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { ModalSelectModule } from './components/modal-select/modal-select.module';
+import { ModalPeriodModule } from './components/modal-period/modal-period.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +21,8 @@ import { ModalSelectModule } from './components/modal-select/modal-select.module
            IonicModule.forRoot(), 
            AppRoutingModule, 
            IonicStorageModule.forRoot(),
-           ModalSelectModule ],
+           ModalSelectModule,
+           ModalPeriodModule ],
   providers: [
     StatusBar,
     SplashScreen,
