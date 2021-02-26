@@ -37,8 +37,8 @@ import * as moment from 'moment';
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
          });
-        let d1: string = moment(data_de).set({hour: 0, minute: 0, second: 0}).format('YYYY-MM-DD HH:mm:ss');
-        let d2: string = moment(data_ate).set({hour:23,minute:59, second: 0}).format('YYYY-MM-DD HH:mm:ss');
+        let d1: string = moment(data_de).set({hour: 0, minute: 0, second: 0}).format();
+        let d2: string = moment(data_ate).set({hour:23,minute:59, second: 59}).format();
 
         return this.http.get<Timesheet[]>(`${this.url}/data_de/${d1}/data_ate/${d2}/cliente_de/${id_cliente_de}/cliente_ate/${id_cliente_ate}/usuario_de/${id_usuario_de}/usuario_ate/${id_usuario_ate}`, { headers: header });
     }
